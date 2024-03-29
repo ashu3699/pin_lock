@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: PinLockProvider(
         controller: PinLockController(PinLockConfiguration(
-          verifier: DigitVerifier(storage),
+          verifiers: [DigitVerifier(storage)],
           unlockStrategy: TimeBasedAttemptsStrategy(
             maxAttempts: 5,
             timeout: const Duration(minutes: 5),

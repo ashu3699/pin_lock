@@ -3,13 +3,13 @@ import 'package:pin_lock/src/lock_machine/verifier/pin_verifier.dart';
 
 class PinLockConfiguration {
   PinLockConfiguration({
-    required this.verifier,
+    required this.verifiers,
     required this.unlockStrategy,
     // required this.blockStrategy,
     // required this.timeoutStrategy,
   });
 
-  final PinVerifier verifier;
+  final List<PinVerifier> verifiers;
   final UnlockStrategy unlockStrategy;
 // final BlockStrategy blockStrategy;
 // final TimeoutStrategy timeoutStrategy;

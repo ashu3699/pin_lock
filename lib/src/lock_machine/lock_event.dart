@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:pin_lock/src/lock_machine/configuration/pin_lock_configuration.dart';
 import 'package:pin_lock/src/lock_machine/lock_state.dart';
 import 'package:pin_lock/src/lock_machine/verifier/input/pin_input.dart';
+import 'package:pin_lock/src/lock_machine/verifier/verifier_list_extension.dart';
 
 sealed class LockEvent {
   Future<LockState> updateState(
@@ -80,7 +81,7 @@ class Unlock extends LockEvent {
   Future<LockState> _verifyPinAttempt(
     PinLockConfiguration configuration,
   ) async {
-    final isCorrectPin = await configuration.verifier.verifyPin(pin);
+    final isCorrectPin = await configuration.verifiers.verifyPin(pin);
     print('isCorrect: $isCorrectPin');
     if (isCorrectPin) {
       final isValidAttempt = await configuration.unlockStrategy.onAttempt();

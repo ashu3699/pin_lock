@@ -1,5 +1,6 @@
 import 'package:pin_lock/pin_lock.dart';
 import 'package:pin_lock/src/lock_machine/lock_state.dart';
+import 'package:pin_lock/src/lock_machine/verifier/input/biometric_input.dart';
 import 'package:pin_lock/src/lock_machine/verifier/input/pin_input.dart';
 
 class PinLockController {
@@ -24,23 +25,41 @@ class PinLockController {
   Stream<LockState> get stream => _lockStateMachine.stream;
   LockState get state => _lockStateMachine.state;
 
+  bool verifyPin(PinInput input) {
+    print('Verifying pin...');
+    //to-do: implement verify pin
+
+    return true;
+  }
+
   void lock() {
     _lockStateMachine.update(Lock(), configuration);
   }
 
-  void unlock() {
-    print('Unlocking...');
+  void unlock(PinInput input) {
+    _lockStateMachine.update(Unlock(input), configuration);
   }
 
   void biometricUnlock() {
     print('Biometric unlocking...');
+
+    final success = _doBiometricUnlock();
+
+    _lockStateMachine.update(Unlock(BiometricInput(success)), configuration);
+  }
+
+  bool _doBiometricUnlock() {
+    print('Doing biometric unlock...');
+
+    return true;
   }
 
   void reset() {
-    print('Resetting...');
+    _lockStateMachine.update(Remove(), configuration);
   }
 
-  void setup(PinInput input) {
-    print('Setting up...');
+  void setPin(PinInput input) {
+    //to-do: implement set pin
+    _lockStateMachine.update(Setup(), configuration);
   }
 }

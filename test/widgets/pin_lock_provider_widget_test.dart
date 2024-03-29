@@ -9,7 +9,7 @@ void main() {
       PinLockProvider(
         controller: PinLockController(
           PinLockConfiguration(
-            verifier: DigitVerifier(MemoryStorage()..savePin(1234.hashCode)),
+            verifiers: [DigitVerifier(MemoryStorage()..savePin(1234.hashCode))],
             unlockStrategy: TimeBasedAttemptsStrategy(
               maxAttempts: 5,
               timeout: const Duration(minutes: 5),

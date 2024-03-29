@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     machine.update(
         Setup(),
         PinLockConfiguration(
-          verifier: DigitVerifier(storage),
+          verifiers: [DigitVerifier(storage)],
           unlockStrategy: TimeBasedAttemptsStrategy(
             maxAttempts: 5,
             timeout: const Duration(minutes: 5),
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Unlock(DigitPinInput(1234)),
                     PinLockConfiguration(
-                      verifier: DigitVerifier(storage),
+                      verifiers: [DigitVerifier(storage)],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Unlock(DigitPinInput(4321)),
                     PinLockConfiguration(
-                      verifier: DigitVerifier(storage),
+                      verifiers: [DigitVerifier(storage)],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Lock(),
                     PinLockConfiguration(
-                      verifier: DigitVerifier(storage),
+                      verifiers: [DigitVerifier(storage)],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),

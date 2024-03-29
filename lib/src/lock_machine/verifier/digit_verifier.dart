@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import '../configuration/storage/pin_storage_interface.dart';
-import 'input/digit_pin_input.dart';
-import 'pin_verifier.dart';
+import 'package:pin_lock/src/lock_machine/configuration/storage/pin_storage_interface.dart';
+import 'package:pin_lock/src/lock_machine/verifier/input/digit_pin_input.dart';
+import 'package:pin_lock/src/lock_machine/verifier/pin_verifier.dart';
 
-class DigitVerifier implements PinVerifier<DigitPinInput> {
+class DigitVerifier extends PinVerifier<DigitPinInput> {
   DigitVerifier(this._storageConfig);
 
   final PinStorageInterface _storageConfig;
 
   @override
-  FutureOr<bool> verifyPin(DigitPinInput input) async {
+  Future<bool> verifyPin(DigitPinInput input) async {
     return input.hash == await _storageConfig.getPin();
   }
 }

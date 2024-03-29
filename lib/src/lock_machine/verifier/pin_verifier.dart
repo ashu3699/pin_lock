@@ -1,7 +1,9 @@
 import 'dart:async';
 
-import 'input/pin_input.dart';
+import 'package:pin_lock/src/lock_machine/verifier/input/pin_input.dart';
 
-abstract interface class PinVerifier<T extends PinInput> {
-  FutureOr<bool> verifyPin(T input);
+abstract class PinVerifier<T extends PinInput> {
+  Future<bool> verifyPin(T input);
+
+  bool verifiesType(PinInput input) => input is T;
 }
