@@ -39,17 +39,18 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     storage = MemoryStorage()..savePin(1234.hashCode);
-    machine = LockStateMachine(PinLockConfiguration(
-      setupStrategy: SetupStrategy.Locked,
-      verifier: DigitVerifier(storage),
-      unlockStrategy: TimeBasedAttemptsStrategy(
-        maxAttempts: 5,
-        timeout: Duration(minutes: 5),
-        storage: storage,
-      ),
-    ));
+    machine = LockStateMachine();
 
-    machine.update(Setup());
+    machine.update(
+        Setup(),
+        PinLockConfiguration(
+          verifier: DigitVerifier(storage),
+          unlockStrategy: TimeBasedAttemptsStrategy(
+            maxAttempts: 5,
+            timeout: const Duration(minutes: 5),
+            storage: storage,
+          ),
+        ));
   }
 
   @override
@@ -70,21 +71,48 @@ class _MyHomePageState extends State<MyHomePage> {
             const Spacer(),
             ElevatedButton(
               onPressed: () {
-                machine.update(Unlock(DigitPinInput(1234)));
+                machine.update(
+                    Unlock(DigitPinInput(1234)),
+                    PinLockConfiguration(
+                      verifier: DigitVerifier(storage),
+                      unlockStrategy: TimeBasedAttemptsStrategy(
+                        maxAttempts: 5,
+                        timeout: const Duration(minutes: 5),
+                        storage: storage,
+                      ),
+                    ));
               },
-              child: Text('correct pin'),
+              child: const Text('correct pin'),
             ),
             ElevatedButton(
               onPressed: () {
-                machine.update(Unlock(DigitPinInput(4321)));
+                machine.update(
+                    Unlock(DigitPinInput(4321)),
+                    PinLockConfiguration(
+                      verifier: DigitVerifier(storage),
+                      unlockStrategy: TimeBasedAttemptsStrategy(
+                        maxAttempts: 5,
+                        timeout: const Duration(minutes: 5),
+                        storage: storage,
+                      ),
+                    ));
               },
-              child: Text('incorrect pin'),
+              child: const Text('incorrect pin'),
             ),
             ElevatedButton(
               onPressed: () {
-                machine.update(Lock());
+                machine.update(
+                    Lock(),
+                    PinLockConfiguration(
+                      verifier: DigitVerifier(storage),
+                      unlockStrategy: TimeBasedAttemptsStrategy(
+                        maxAttempts: 5,
+                        timeout: const Duration(minutes: 5),
+                        storage: storage,
+                      ),
+                    ));
               },
-              child: Text('Lock'),
+              child: const Text('Lock'),
             ),
           ],
         ),

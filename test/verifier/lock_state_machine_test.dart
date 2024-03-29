@@ -5,17 +5,7 @@ import 'package:pin_lock/src/lock_machine/lock_state.dart';
 
 void main() {
   test('LockStateMachine should be in Uninitialised state after creation', () {
-    final machine = LockStateMachine(
-      PinLockConfiguration(
-        setupStrategy: SetupStrategy.Locked,
-        verifier: DigitVerifier(MemoryStorage()..savePin(1234.hashCode)),
-        unlockStrategy: TimeBasedAttemptsStrategy(
-          maxAttempts: 5,
-          timeout: const Duration(minutes: 5),
-          storage: MemoryStorage(),
-        ),
-      ),
-    );
+    final machine = LockStateMachine();
 
     expect(machine.state, isA<Uninitialised>());
   });
@@ -38,6 +28,7 @@ void main() {
       [const Locked(), Remove(), const Uninitialised()],
       [const Locked(), Lock(), const Locked()],
       [const Locked(), Unlock(DigitPinInput(1234)), const UnLocked()],
+      [const Locked(), Unlock(DigitPinInput(4321)), const Locked()],
       // Blocked state
       [const Blocked(), Setup(), const Blocked()],
       [const Blocked(), Remove(), const Uninitialised()],
@@ -45,20 +36,20 @@ void main() {
       [const Blocked(), Unlock(DigitPinInput(1234)), const Blocked()],
     ],
     (LockState initialState, LockEvent event, LockState expectedState) async {
-      final machine = LockStateMachine(
-        PinLockConfiguration(
-          setupStrategy: SetupStrategy.Locked,
-          verifier: DigitVerifier(MemoryStorage()..savePin(1234.hashCode)),
-          unlockStrategy: TimeBasedAttemptsStrategy(
-            maxAttempts: 5,
-            timeout: const Duration(minutes: 5),
-            storage: MemoryStorage(),
-          ),
+      final configuration = PinLockConfiguration(
+        verifier: DigitVerifier(MemoryStorage()..savePin(1234.hashCode)),
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: MemoryStorage(),
         ),
+      );
+
+      final machine = LockStateMachine(
         initialState: initialState,
       );
 
-      await machine.update(event);
+      await machine.update(event, configuration);
 
       expect(machine.state.runtimeType, expectedState.runtimeType);
     },

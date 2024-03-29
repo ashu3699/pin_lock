@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:pin_lock/src/lock_machine/configuration/pin_lock_configuration.dart';
-import 'package:pin_lock/src/lock_machine/configuration/setup_strategy.dart';
 import 'package:pin_lock/src/lock_machine/lock_state.dart';
 import 'package:pin_lock/src/lock_machine/verifier/input/pin_input.dart';
 
@@ -22,10 +21,7 @@ class Setup extends LockEvent {
     PinLockConfiguration configuration,
   ) async {
     return switch (state) {
-      Uninitialised() => switch (configuration.setupStrategy) {
-          SetupStrategy.Locked => const Locked(),
-          SetupStrategy.Unlocked => const UnLocked(),
-        },
+      Uninitialised() => const UnLocked(),
       _ => state,
     };
   }
