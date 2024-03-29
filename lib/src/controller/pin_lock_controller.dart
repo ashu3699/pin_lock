@@ -13,16 +13,19 @@ class PinLockController {
 
   void _initialize() {
     if (configuration.isInitialised) {
-      _lockStateMachine = LockStateMachine();
-    } else {
       _lockStateMachine = LockStateMachine(
         initialState: const Locked(),
       );
+    } else {
+      _lockStateMachine = LockStateMachine();
     }
   }
 
+  Stream<LockState> get stream => _lockStateMachine.stream;
+  LockState get state => _lockStateMachine.state;
+
   void lock() {
-    print('Locking...');
+    _lockStateMachine.update(Lock(), configuration);
   }
 
   void unlock() {
