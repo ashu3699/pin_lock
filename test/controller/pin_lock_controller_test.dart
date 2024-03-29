@@ -4,43 +4,180 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pin_lock/pin_lock.dart';
 import 'package:pin_lock/src/lock_machine/lock_state.dart';
+import 'package:pin_lock/src/lock_machine/verifier/biometric_verifier.dart';
+import 'package:pin_lock/src/lock_machine/verifier/input/biometric_input.dart';
+import 'package:pin_lock/src/lock_machine/verifier/input/string_pin_input.dart';
+import 'package:pin_lock/src/lock_machine/verifier/string_verifier.dart';
 
 import '../mocks/mock_pin_lock_configuration.dart';
 
 void main() {
-  test('PinLockController should have an initial state if configuration is loaded', () async {
-    final PinLockConfiguration configuration = MockPinLockConfiguration();
+  group('Loading states', () {
+    test('PinLockController should have an initial state if configuration is loaded', () async {
+      final PinLockConfiguration configuration = MockPinLockConfiguration();
 
-    when(() => configuration.isInitialised).thenReturn(true);
+      when(() => configuration.isInitialised).thenReturn(true);
 
-    final controller = PinLockController(configuration);
+      final controller = PinLockController(configuration);
 
-    expect(controller.state, isA<Locked>());
+      expect(controller.state, isA<Locked>());
 
-    StreamSubscription<LockState>? subscription;
+      StreamSubscription<LockState>? subscription;
 
-    subscription = controller.stream.listen((event) {
-      expect(event, isA<Locked>());
+      subscription = controller.stream.listen((event) {
+        expect(event, isA<Locked>());
 
-      subscription!.cancel();
+        subscription!.cancel();
+      });
+    });
+
+    test('PinLockController should have an initial state if configuration is not loaded', () async {
+      final PinLockConfiguration configuration = MockPinLockConfiguration();
+
+      when(() => configuration.isInitialised).thenReturn(false);
+
+      final controller = PinLockController(configuration);
+
+      expect(controller.state, isA<Uninitialised>());
+
+      StreamSubscription<LockState>? subscription;
+
+      subscription = controller.stream.listen((event) {
+        expect(event, isA<Uninitialised>());
+
+        subscription!.cancel();
+      });
     });
   });
 
-  test('PinLockController should have an initial state if configuration is not loaded', () async {
-    final PinLockConfiguration configuration = MockPinLockConfiguration();
+  group('verification', () {
+    test('PinLockController should verify pin with digit verifier', () async {
+      final storage = MemoryStorage()..savePin(1234.hashCode);
 
-    when(() => configuration.isInitialised).thenReturn(false);
+      final configuration = PinLockConfiguration(
+        verifiers: [
+          DigitVerifier(storage),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
 
-    final controller = PinLockController(configuration);
+      final controller = PinLockController(configuration);
 
-    expect(controller.state, isA<Uninitialised>());
+      final input = DigitPinInput(1234);
 
-    StreamSubscription<LockState>? subscription;
+      final result = await controller.verifyPin(input);
 
-    subscription = controller.stream.listen((event) {
-      expect(event, isA<Uninitialised>());
+      expect(result, true);
 
-      subscription!.cancel();
+      final input2 = DigitPinInput(4321);
+
+      final result2 = await controller.verifyPin(input2);
+
+      expect(result2, false);
+    });
+
+    test('PinLockController should verify pin with string verifier', () async {
+      final storage = MemoryStorage()..savePin('asdf'.hashCode);
+
+      final configuration = PinLockConfiguration(
+        verifiers: [
+          StringVerifier(storage),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
+
+      final controller = PinLockController(configuration);
+
+      final input = StringPinInput('asdf');
+
+      final result = await controller.verifyPin(input);
+
+      expect(result, true);
+
+      final input2 = StringPinInput('qwer');
+
+      final result2 = await controller.verifyPin(input2);
+
+      expect(result2, false);
+    });
+
+    test('PinLockController should verify pin with biometric verifier', () async {
+      final configuration = PinLockConfiguration(
+        verifiers: [
+          BiometricVerifier(),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: MemoryStorage(),
+        ),
+      );
+
+      final controller = PinLockController(configuration);
+
+      final input = BiometricInput(true);
+
+      final result = await controller.verifyPin(input);
+
+      expect(result, true);
+
+      final input2 = BiometricInput(false);
+
+      final result2 = await controller.verifyPin(input2);
+
+      expect(result2, false);
+    });
+
+    test('PinLockController should verify pin with multiple verifiers', () async {
+      final storage = MemoryStorage()..savePin(1234.hashCode);
+      final storage2 = MemoryStorage()..savePin('asdf'.hashCode);
+
+      final configuration = PinLockConfiguration(
+        verifiers: [
+          DigitVerifier(storage),
+          StringVerifier(storage2),
+          BiometricVerifier(),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
+
+      final controller = PinLockController(configuration);
+
+      final input = DigitPinInput(1234);
+
+      final result = await controller.verifyPin(input);
+
+      expect(result, true);
+
+      final input2 = StringPinInput('asdf');
+
+      final result2 = await controller.verifyPin(input2);
+
+      expect(result2, true);
+
+      final input3 = DigitPinInput(4321);
+
+      final result3 = await controller.verifyPin(input3);
+
+      expect(result3, false);
+
+      final input4 = BiometricInput(true);
+
+      final result4 = await controller.verifyPin(input4);
+
+      expect(result4, true);
     });
   });
 }
