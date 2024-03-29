@@ -41,3 +41,18 @@ For all functionality that is included in pin_lock package should be a clear use
   -- Enter pincode widget that helps you with unlocking the pin mechanism and showing block state.
 
 - Provide a helper that enables the developer to choose from multiple types of unlocking (password, pincode, biometric, endless possibilities) and help store and match them for locking and unlocking the top level lock controller. This should provide a abstraction layer for saving data, but the developer should implement a way of storage for themselves. We could provide a good example with flutter_secure_storage, but we won't include it in the pacakge, as storing itself is not in scope of pin_lock. This improves maintainability a lot.
+
+
+## Current progress
+- State machine flow fully implemented with the exception of blocked
+- Controller with usable functions to control state machine
+- Inherited Widget that provides a PinLockController
+- Support for multiple types of verification in the same controller
+- Demo app (Needs to be intergrated with the new package functionality)
+
+### Todo:
+- Biometric login support
+- Implement blocked state
+- Helper widgets
+- Integrate with example
+- Improve code coverage
