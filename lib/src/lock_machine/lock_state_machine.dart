@@ -5,8 +5,8 @@ import 'package:pin_lock/src/lock_machine/lock_event.dart';
 import 'package:pin_lock/src/lock_machine/lock_state.dart';
 
 class LockStateMachine {
-  LockStateMachine(this._configuration) {
-    _setState(const Uninitialised());
+  LockStateMachine(this._configuration, {LockState initialState = const Uninitialised()}) {
+    _setState(initialState);
   }
 
   final PinLockConfiguration _configuration;
@@ -24,7 +24,7 @@ class LockStateMachine {
     _controller.add(state);
   }
 
-  void update(LockEvent event) async {
+  Future<void> update(LockEvent event) async {
     final updatedState = await event.updateState(state, _configuration);
     print('$_state --$event--> $updatedState');
     _setState(updatedState);

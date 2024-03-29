@@ -18,10 +18,6 @@ analyzer:
     strict-raw-types: true
 
   exclude:
-    - lib/**/*.g.dart
-    - lib/**/*.gen.dart
-    - lib/**/*.freezed.dart
-    - lib/**/*.chopper.dart
     - lib/**/*.config.dart
     - build/**
     - test/test_util/test_dependencies.config.dart

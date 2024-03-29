@@ -23,8 +23,8 @@ class Setup extends LockEvent {
   ) async {
     return switch (state) {
       Uninitialised() => switch (configuration.setupStrategy) {
-          SetupStrategy.Locked => const Locked2(),
-          SetupStrategy.Unlocked => const Unlocked2(),
+          SetupStrategy.Locked => const Locked(),
+          SetupStrategy.Unlocked => const UnLocked(),
         },
       _ => state,
     };
@@ -41,7 +41,7 @@ class Remove extends LockEvent {
     PinLockConfiguration configuration,
   ) async {
     return switch (state) {
-      Unlocked2() => const Uninitialised(),
+      UnLocked() => const Uninitialised(),
       _ => state,
     };
   }
@@ -57,7 +57,7 @@ class Lock extends LockEvent {
     PinLockConfiguration configuration,
   ) async {
     return switch (state) {
-      Unlocked2() => const Locked2(),
+      UnLocked() => const Locked(),
       _ => state,
     };
   }
@@ -76,7 +76,7 @@ class Unlock extends LockEvent {
     PinLockConfiguration configuration,
   ) async {
     return switch (state) {
-      Locked2() => await _verifyPinAttempt(configuration),
+      Locked() => await _verifyPinAttempt(configuration),
       _ => state,
     };
   }
@@ -90,13 +90,13 @@ class Unlock extends LockEvent {
       final isValidAttempt = await configuration.unlockStrategy.onAttempt();
       print('isValid: $isValidAttempt');
       if (isValidAttempt) {
-        return const Unlocked2();
+        return const UnLocked();
       } else {}
     } else {
       configuration.unlockStrategy.failedAttempt();
       //TODO: Block config here
     }
-    return const Locked2();
+    return const Locked();
   }
 }
 /// state is locked

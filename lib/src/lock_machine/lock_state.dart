@@ -9,18 +9,18 @@ class Uninitialised extends LockState {
   String toString() => 'Uninitialised';
 }
 
-class Locked2 extends LockState {
-  const Locked2();
+class Locked extends LockState {
+  const Locked();
 
   @override
-  String toString() => 'Locked2';
+  String toString() => 'Locked';
 }
 
-class Unlocked2 extends LockState {
-  const Unlocked2();
+class UnLocked extends LockState {
+  const UnLocked();
 
   @override
-  String toString() => 'Unlocked2';
+  String toString() => 'UnLocked';
 }
 
 class Blocked extends LockState {
