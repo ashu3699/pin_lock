@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:pin_lock/src/lock_machine/lock_event.dart';
-import 'package:pin_lock/src/lock_machine/lock_state2.dart';
 import 'package:pin_lock/src/lock_machine/configuration/pin_lock_configuration.dart';
+import 'package:pin_lock/src/lock_machine/lock_event.dart';
+import 'package:pin_lock/src/lock_machine/lock_state.dart';
 
 class LockStateMachine {
   LockStateMachine(this._configuration) {
@@ -11,16 +11,15 @@ class LockStateMachine {
 
   final PinLockConfiguration _configuration;
 
-  late LockState2 _state;
+  late LockState _state;
 
-  LockState2 get state => _state;
+  LockState get state => _state;
 
-  final StreamController<LockState2> _controller =
-      StreamController<LockState2>.broadcast();
+  final StreamController<LockState> _controller = StreamController<LockState>.broadcast();
 
-  Stream<LockState2> get stream => _controller.stream;
+  Stream<LockState> get stream => _controller.stream;
 
-  void _setState(LockState2 state) {
+  void _setState(LockState state) {
     _state = state;
     _controller.add(state);
   }

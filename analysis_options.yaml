@@ -1,13 +1,28 @@
-include: package:flutter_lints/flutter.yaml
-
-analyzer:
-  exclude:
-    - "lib/**/*.mocks.dart"
-  errors:
-    todo: info
+include: package:very_good_analysis/analysis_options.yaml
 
 linter:
   rules:
-    prefer_single_quotes: true
-    sort_pub_dependencies: false
-   
+    lines_longer_than_80_chars: false
+analyzer:
+  errors:
+    unawaited_futures: warning
+    avoid_void_async: warning
+    missing_return: error
+    missing_required_param: error
+    invalid_annotation_target: info
+    todo: ignore
+
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+  exclude:
+    - lib/**/*.g.dart
+    - lib/**/*.gen.dart
+    - lib/**/*.freezed.dart
+    - lib/**/*.chopper.dart
+    - lib/**/*.config.dart
+    - build/**
+    - test/test_util/test_dependencies.config.dart
+
