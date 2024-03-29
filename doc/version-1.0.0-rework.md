@@ -56,3 +56,4 @@ For all functionality that is included in pin_lock package should be a clear use
 - Helper widgets
 - Integrate with example
 - Improve code coverage
+- Dart docs
