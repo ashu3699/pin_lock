@@ -81,7 +81,7 @@ class Unlock extends LockEvent {
   Future<LockState> _verifyPinAttempt(
     PinLockConfiguration configuration,
   ) async {
-    final isCorrectPin = await configuration.verifiers.verifyPin(pin);
+    final isCorrectPin = await configuration.verifiers.verifyPin(pin, configuration.storage);
     print('isCorrect: $isCorrectPin');
     if (isCorrectPin) {
       final isValidAttempt = await configuration.unlockStrategy.onAttempt();

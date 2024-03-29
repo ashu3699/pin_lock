@@ -26,7 +26,7 @@ class PinLockController {
   Stream<LockState> get stream => _lockStateMachine.stream;
   LockState get state => _lockStateMachine.state;
 
-  Future<bool> verifyPin(PinInput input) => configuration.verifiers.verifyPin(input);
+  Future<bool> verifyPin(PinInput input) => configuration.verifiers.verifyPin(input, configuration.storage);
 
   void lock() {
     _lockStateMachine.update(Lock(), configuration);

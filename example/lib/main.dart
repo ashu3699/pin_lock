@@ -38,13 +38,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    storage = MemoryStorage()..savePin(1234.hashCode);
+    storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
     machine = LockStateMachine();
 
     machine.update(
         Setup(),
         PinLockConfiguration(
-          verifiers: [DigitVerifier(storage)],
+          storage: storage,
+          verifiers: [DigitVerifier()],
           unlockStrategy: TimeBasedAttemptsStrategy(
             maxAttempts: 5,
             timeout: const Duration(minutes: 5),
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
             StreamBuilder(
                 stream: machine.stream,
                 builder: (context, snapshot) {
-                  return Text(snapshot.data.toString() ?? 'none');
+                  return Text(snapshot.data.toString());
                 }),
             const Spacer(),
             ElevatedButton(
@@ -74,7 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Unlock(DigitPinInput(1234)),
                     PinLockConfiguration(
-                      verifiers: [DigitVerifier(storage)],
+                      storage: storage,
+                      verifiers: [DigitVerifier()],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),
@@ -89,7 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Unlock(DigitPinInput(4321)),
                     PinLockConfiguration(
-                      verifiers: [DigitVerifier(storage)],
+                      storage: storage,
+                      verifiers: [DigitVerifier()],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),
@@ -104,7 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 machine.update(
                     Lock(),
                     PinLockConfiguration(
-                      verifiers: [DigitVerifier(storage)],
+                      storage: storage,
+                      verifiers: [DigitVerifier()],
                       unlockStrategy: TimeBasedAttemptsStrategy(
                         maxAttempts: 5,
                         timeout: const Duration(minutes: 5),

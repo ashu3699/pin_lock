@@ -37,7 +37,8 @@ void main() {
     ],
     (LockState initialState, LockEvent event, LockState expectedState) async {
       final configuration = PinLockConfiguration(
-        verifiers: [DigitVerifier(MemoryStorage()..savePin(1234.hashCode))],
+        storage: MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode),
+        verifiers: [DigitVerifier()],
         unlockStrategy: TimeBasedAttemptsStrategy(
           maxAttempts: 5,
           timeout: const Duration(minutes: 5),

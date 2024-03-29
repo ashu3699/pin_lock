@@ -5,12 +5,13 @@ import 'package:pin_lock/src/lock_machine/verifier/input/string_pin_input.dart';
 import 'package:pin_lock/src/lock_machine/verifier/pin_verifier.dart';
 
 class StringVerifier extends PinVerifier<StringPinInput> {
-  StringVerifier(this._storageConfig);
-
-  final PinStorageInterface _storageConfig;
+  StringVerifier();
 
   @override
-  Future<bool> verifyPin(StringPinInput input) async {
-    return input.hash == await _storageConfig.getPin();
+  String get storageKey => 'string';
+
+  @override
+  Future<bool> verifyPin(StringPinInput input, PinStorageInterface storage) async {
+    return input.hash == await storage.getPin(storageKey);
   }
 }

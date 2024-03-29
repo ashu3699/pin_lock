@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'attempt_storage_interface.dart';
-import 'pin_storage_interface.dart';
+import 'package:pin_lock/src/lock_machine/configuration/storage/pin_lock_storage.dart';
 
-class MemoryStorage implements AttemptStorageInterface, PinStorageInterface {
+class MemoryStorage implements PinLockStorage {
   MemoryStorage();
 
   List<int> _timestamps = [];
-  int _pin = 0;
+
+  Map<String, int> pins = {};
 
   @override
   FutureOr<List<int>> getTimestamps() => _timestamps;
@@ -18,12 +18,12 @@ class MemoryStorage implements AttemptStorageInterface, PinStorageInterface {
   }
 
   @override
-  FutureOr<int> getPin() {
-    return _pin;
+  FutureOr<int?> getPin(String key) {
+    return pins[key];
   }
 
   @override
-  FutureOr<void> savePin(int input) {
-    _pin = input;
+  FutureOr<void> savePin(String key, int input) {
+    pins[key] = input;
   }
 }

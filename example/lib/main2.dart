@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    storage = MemoryStorage()..savePin(1234.hashCode);
+    storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
   }
 
   @override
@@ -47,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: PinLockProvider(
         controller: PinLockController(PinLockConfiguration(
-          verifiers: [DigitVerifier(storage)],
+          storage: storage,
+          verifiers: [DigitVerifier()],
           unlockStrategy: TimeBasedAttemptsStrategy(
             maxAttempts: 5,
             timeout: const Duration(minutes: 5),

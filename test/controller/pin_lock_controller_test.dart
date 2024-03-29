@@ -52,11 +52,12 @@ void main() {
 
   group('verification', () {
     test('PinLockController should verify pin with digit verifier', () async {
-      final storage = MemoryStorage()..savePin(1234.hashCode);
+      final storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
 
       final configuration = PinLockConfiguration(
+        storage: storage,
         verifiers: [
-          DigitVerifier(storage),
+          DigitVerifier(),
         ],
         unlockStrategy: TimeBasedAttemptsStrategy(
           maxAttempts: 5,
@@ -81,11 +82,12 @@ void main() {
     });
 
     test('PinLockController should verify pin with string verifier', () async {
-      final storage = MemoryStorage()..savePin('asdf'.hashCode);
+      final storage = MemoryStorage()..savePin(StringVerifier().storageKey, 'asdf'.hashCode);
 
       final configuration = PinLockConfiguration(
+        storage: storage,
         verifiers: [
-          StringVerifier(storage),
+          StringVerifier(),
         ],
         unlockStrategy: TimeBasedAttemptsStrategy(
           maxAttempts: 5,
@@ -114,6 +116,7 @@ void main() {
         verifiers: [
           BiometricVerifier(),
         ],
+        storage: MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode),
         unlockStrategy: TimeBasedAttemptsStrategy(
           maxAttempts: 5,
           timeout: const Duration(minutes: 5),
@@ -137,13 +140,15 @@ void main() {
     });
 
     test('PinLockController should verify pin with multiple verifiers', () async {
-      final storage = MemoryStorage()..savePin(1234.hashCode);
-      final storage2 = MemoryStorage()..savePin('asdf'.hashCode);
+      final storage = MemoryStorage()
+        ..savePin(DigitVerifier().storageKey, 1234.hashCode)
+        ..savePin(StringVerifier().storageKey, 'asdf'.hashCode);
 
       final configuration = PinLockConfiguration(
+        storage: storage,
         verifiers: [
-          DigitVerifier(storage),
-          StringVerifier(storage2),
+          DigitVerifier(),
+          StringVerifier(),
           BiometricVerifier(),
         ],
         unlockStrategy: TimeBasedAttemptsStrategy(
