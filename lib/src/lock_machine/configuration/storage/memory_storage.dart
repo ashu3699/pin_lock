@@ -7,7 +7,7 @@ class MemoryStorage implements PinLockStorage {
 
   List<int> _timestamps = [];
 
-  Map<String, int> pins = {};
+  final Map<String, int> _pins = {};
 
   @override
   FutureOr<List<int>> getTimestamps() => _timestamps;
@@ -19,11 +19,11 @@ class MemoryStorage implements PinLockStorage {
 
   @override
   FutureOr<int?> getPin(String key) {
-    return pins[key];
+    return _pins[key];
   }
 
   @override
   FutureOr<void> savePin(String key, int input) {
-    pins[key] = input;
+    _pins[key] = input;
   }
 }

@@ -32,11 +32,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late MemoryStorage storage;
+  PinLockController? controller;
 
   @override
   void initState() {
     super.initState();
     storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
+    createController();
+  }
+
+  void createController() async {
+    controller = await PinLockController.initialize(
+      PinLockConfiguration(
+        storage: storage,
+        verifiers: [DigitVerifier()],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      ),
+    );
   }
 
   @override
@@ -45,27 +61,21 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: PinLockProvider(
-        controller: PinLockController(PinLockConfiguration(
-          storage: storage,
-          verifiers: [DigitVerifier()],
-          unlockStrategy: TimeBasedAttemptsStrategy(
-            maxAttempts: 5,
-            timeout: const Duration(minutes: 5),
-            storage: storage,
-          ),
-        )),
-        child: Center(
-          child: Builder(builder: (context) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(PinLockProvider.maybeOf(context)?.controller.toString() ?? 'No controller found'),
-              ],
-            );
-          }),
-        ),
-      ),
+      body: controller == null
+          ? const SizedBox.shrink()
+          : PinLockProvider(
+              controller: controller!,
+              child: Center(
+                child: Builder(builder: (context) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(PinLockProvider.maybeOf(context)?.controller.toString() ?? 'No controller found'),
+                    ],
+                  );
+                }),
+              ),
+            ),
     );
   }
 }

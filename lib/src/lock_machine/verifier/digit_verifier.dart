@@ -14,4 +14,9 @@ class DigitVerifier extends PinVerifier<DigitPinInput> {
   Future<bool> verifyPin(DigitPinInput input, PinStorageInterface storage) async {
     return input.hash == await storage.getPin(storageKey);
   }
+
+  @override
+  Future<bool> isVerified(PinStorageInterface storage) async {
+    return await storage.getPin(storageKey) != null;
+  }
 }

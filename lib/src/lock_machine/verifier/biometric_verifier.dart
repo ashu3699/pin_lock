@@ -12,4 +12,10 @@ class BiometricVerifier extends PinVerifier<BiometricInput> {
   Future<bool> verifyPin(BiometricInput input, PinStorageInterface storage) async {
     return input.value;
   }
+
+  @override
+  Future<bool> isVerified(PinStorageInterface storage) async {
+    // to-do: we could check here if there is a biometric value configured
+    return true;
+  }
 }

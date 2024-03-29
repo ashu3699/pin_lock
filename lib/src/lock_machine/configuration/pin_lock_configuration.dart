@@ -19,6 +19,14 @@ class PinLockConfiguration {
 // final BlockStrategy blockStrategy;
 // final TimeoutStrategy timeoutStrategy;
 
-  // todo: implement get initialised call
-  bool get isInitialised => true;
+  Future<bool> get isInitialised async {
+    for (final verifier in verifiers) {
+      final hasPinForStorageKey = await verifier.isVerified(storage);
+      if (hasPinForStorageKey) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

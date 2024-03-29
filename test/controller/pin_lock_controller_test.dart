@@ -16,9 +16,9 @@ void main() {
     test('PinLockController should have an initial state if configuration is loaded', () async {
       final PinLockConfiguration configuration = MockPinLockConfiguration();
 
-      when(() => configuration.isInitialised).thenReturn(true);
+      when(() => configuration.isInitialised).thenAnswer((_) async => true);
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       expect(controller.state, isA<Locked>());
 
@@ -34,9 +34,9 @@ void main() {
     test('PinLockController should have an initial state if configuration is not loaded', () async {
       final PinLockConfiguration configuration = MockPinLockConfiguration();
 
-      when(() => configuration.isInitialised).thenReturn(false);
+      when(() => configuration.isInitialised).thenAnswer((_) async => false);
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       expect(controller.state, isA<Uninitialised>());
 
@@ -66,7 +66,7 @@ void main() {
         ),
       );
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       final input = DigitPinInput(1234);
 
@@ -79,6 +79,12 @@ void main() {
       final result2 = await controller.verifyPin(input2);
 
       expect(result2, false);
+
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input2);
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input);
+      expect(controller.state, isA<UnLocked>());
     });
 
     test('PinLockController should verify pin with string verifier', () async {
@@ -96,7 +102,7 @@ void main() {
         ),
       );
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       final input = StringPinInput('asdf');
 
@@ -109,6 +115,12 @@ void main() {
       final result2 = await controller.verifyPin(input2);
 
       expect(result2, false);
+
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input2);
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input);
+      expect(controller.state, isA<UnLocked>());
     });
 
     test('PinLockController should verify pin with biometric verifier', () async {
@@ -124,7 +136,7 @@ void main() {
         ),
       );
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       final input = BiometricInput(true);
 
@@ -137,6 +149,12 @@ void main() {
       final result2 = await controller.verifyPin(input2);
 
       expect(result2, false);
+
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input2);
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input);
+      expect(controller.state, isA<UnLocked>());
     });
 
     test('PinLockController should verify pin with multiple verifiers', () async {
@@ -158,7 +176,7 @@ void main() {
         ),
       );
 
-      final controller = PinLockController(configuration);
+      final controller = await PinLockController.initialize(configuration);
 
       final input = DigitPinInput(1234);
 
@@ -183,6 +201,12 @@ void main() {
       final result4 = await controller.verifyPin(input4);
 
       expect(result4, true);
+
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input3);
+      expect(controller.state, isA<Locked>());
+      await controller.unlock(input);
+      expect(controller.state, isA<UnLocked>());
     });
   });
 }

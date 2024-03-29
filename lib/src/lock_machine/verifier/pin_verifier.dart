@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:pin_lock/src/lock_machine/configuration/storage/pin_lock_storage.dart';
+import 'package:pin_lock/src/lock_machine/configuration/storage/pin_storage_interface.dart';
 import 'package:pin_lock/src/lock_machine/verifier/input/pin_input.dart';
 
 abstract class PinVerifier<T extends PinInput> {
@@ -8,4 +9,5 @@ abstract class PinVerifier<T extends PinInput> {
   String get storageKey;
 
   bool verifiesType(PinInput input) => input is T;
+  Future<bool> isVerified(PinStorageInterface storage);
 }

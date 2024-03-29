@@ -7,7 +7,7 @@ void main() {
     BuildContext? innerContext;
     await tester.pumpWidget(
       PinLockProvider(
-        controller: PinLockController(
+        controller: await PinLockController.initialize(
           PinLockConfiguration(
             verifiers: [DigitVerifier()],
             storage: MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode),
