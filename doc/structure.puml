@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class PinLockConfiguration
+
+class PinLockState{
+PinLockConfiguration config
+}
+
+class PinLockEvent{
+updateState(PinLockState state)
+}
+
+class PinVerifier
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+scale 600 width
+
+[*] --> Uninitialised
+[*] --> Locked
+Uninitialised --> Locked : Setup
+Uninitialised --> Unlocked : Setup
+Locked --> Unlocked : Unlock
+Locked --> Blocked : Block
+Unlocked --> Uninitialised : Remove
+Unlocked --> Locked : Lock
+Blocked --> Unlocked : Reset
+Blocked --> Locked : Unblock
+@enduml

@@ -1,0 +1,1 @@
+enum SetupStrategy { Locked, Unlocked }
