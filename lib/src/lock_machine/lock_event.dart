@@ -13,6 +13,10 @@ sealed class LockEvent {
 }
 
 class Setup extends LockEvent {
+  Setup(this.input);
+
+  final PinInput input;
+
   @override
   String toString() => 'Setup';
 
@@ -22,9 +26,25 @@ class Setup extends LockEvent {
     PinLockConfiguration configuration,
   ) async {
     return switch (state) {
-      Uninitialised() => const UnLocked(),
+      Uninitialised() => await setNewPin(state, configuration),
+      UnLocked() => await setNewPin(state, configuration),
       _ => state,
     };
+  }
+
+  Future<LockState> setNewPin(
+    LockState state,
+    PinLockConfiguration configuration,
+  ) async {
+    final key = configuration.verifiers.where((element) => element.verifiesType(input)).firstOrNull?.storageKey;
+
+    if (key == null) {
+      return state;
+    }
+
+    configuration.storage.savePin(key, input.hash);
+
+    return const UnLocked();
   }
 }
 

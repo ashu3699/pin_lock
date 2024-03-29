@@ -60,7 +60,6 @@ class PinLockController {
   }
 
   Future<void> setPin(PinInput input) async {
-    //to-do: implement set pin
-    return _lockStateMachine.update(Setup(), configuration);
+    return _lockStateMachine.update(Setup(input), configuration);
   }
 }

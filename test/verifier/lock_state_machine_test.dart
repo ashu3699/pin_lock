@@ -14,23 +14,23 @@ void main() {
     'LockStateMachine should update to the correct new state',
     [
       // Uninitialised state
-      [const Uninitialised(), Setup(), const UnLocked()],
+      [const Uninitialised(), Setup(DigitPinInput(1234)), const UnLocked()],
       [const Uninitialised(), Remove(), const Uninitialised()],
       [const Uninitialised(), Lock(), const Uninitialised()],
       [const Uninitialised(), Unlock(DigitPinInput(1234)), const Uninitialised()],
       // UnLocked state
-      [const UnLocked(), Setup(), const UnLocked()],
+      [const UnLocked(), Setup(DigitPinInput(1234)), const UnLocked()],
       [const UnLocked(), Remove(), const Uninitialised()],
       [const UnLocked(), Lock(), const Locked()],
       [const UnLocked(), Unlock(DigitPinInput(1234)), const UnLocked()],
       // Locked state
-      [const Locked(), Setup(), const Locked()],
+      [const Locked(), Setup(DigitPinInput(1234)), const Locked()],
       [const Locked(), Remove(), const Uninitialised()],
       [const Locked(), Lock(), const Locked()],
       [const Locked(), Unlock(DigitPinInput(1234)), const UnLocked()],
       [const Locked(), Unlock(DigitPinInput(4321)), const Locked()],
       // Blocked state
-      [const Blocked(), Setup(), const Blocked()],
+      [const Blocked(), Setup(DigitPinInput(1234)), const Blocked()],
       [const Blocked(), Remove(), const Uninitialised()],
       [const Blocked(), Lock(), const Blocked()],
       [const Blocked(), Unlock(DigitPinInput(1234)), const Blocked()],

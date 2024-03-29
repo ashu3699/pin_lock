@@ -50,6 +50,132 @@ void main() {
     });
   });
 
+  group('setup', () {
+    test('PinLockController should setup pin with digit verifier', () async {
+      final storage = MemoryStorage();
+
+      final configuration = PinLockConfiguration(
+        storage: storage,
+        verifiers: [
+          DigitVerifier(),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
+
+      final controller = await PinLockController.initialize(configuration);
+
+      final input = DigitPinInput(1234);
+
+      await controller.unlock(input);
+
+      expect(controller.state, isA<Uninitialised>());
+
+      await controller.setPin(input);
+
+      expect(controller.state, isA<UnLocked>());
+
+      await controller.lock();
+
+      expect(controller.state, isA<Locked>());
+
+      await controller.unlock(input);
+
+      expect(controller.state, isA<UnLocked>());
+    });
+
+    test('PinLockController should override setup pin with digit verifier', () async {
+      final storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
+
+      final configuration = PinLockConfiguration(
+        storage: storage,
+        verifiers: [
+          DigitVerifier(),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
+
+      final controller = await PinLockController.initialize(configuration);
+
+      final input = DigitPinInput(4321);
+
+      await controller.unlock(input);
+
+      expect(controller.state, isA<Locked>());
+
+      await controller.setPin(input);
+
+      expect(controller.state, isA<Locked>(), reason: 'Should not be able to reset pin if not unlocked');
+
+      await controller.unlock(DigitPinInput(1234));
+
+      expect(controller.state, isA<UnLocked>());
+
+      await controller.setPin(input);
+
+      expect(controller.state, isA<UnLocked>());
+
+      await controller.lock();
+
+      expect(controller.state, isA<Locked>());
+
+      await controller.unlock(input);
+
+      expect(controller.state, isA<UnLocked>());
+    });
+
+    test('PinLockController should be able to set pin with different type', () async {
+      final storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
+
+      final configuration = PinLockConfiguration(
+        storage: storage,
+        verifiers: [
+          DigitVerifier(),
+          StringVerifier(),
+        ],
+        unlockStrategy: TimeBasedAttemptsStrategy(
+          maxAttempts: 5,
+          timeout: const Duration(minutes: 5),
+          storage: storage,
+        ),
+      );
+
+      final controller = await PinLockController.initialize(configuration);
+
+      final input = StringPinInput('4321');
+      final originalPin = DigitPinInput(1234);
+
+      await controller.unlock(originalPin);
+
+      await controller.setPin(input);
+
+      expect(controller.state, isA<UnLocked>());
+
+      await controller.lock();
+
+      expect(controller.state, isA<Locked>());
+
+      await controller.unlock(originalPin);
+
+      expect(controller.state, isA<UnLocked>());
+
+      await controller.lock();
+
+      expect(controller.state, isA<Locked>());
+
+      await controller.unlock(input);
+
+      expect(controller.state, isA<UnLocked>());
+    });
+  });
+
   group('verification', () {
     test('PinLockController should verify pin with digit verifier', () async {
       final storage = MemoryStorage()..savePin(DigitVerifier().storageKey, 1234.hashCode);
