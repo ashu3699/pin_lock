@@ -14,7 +14,7 @@ void main() {
     'LockStateMachine should update to the correct new state',
     [
       // Uninitialised state
-      [const Uninitialised(), Setup(), const Locked()],
+      [const Uninitialised(), Setup(), const UnLocked()],
       [const Uninitialised(), Remove(), const Uninitialised()],
       [const Uninitialised(), Lock(), const Uninitialised()],
       [const Uninitialised(), Unlock(DigitPinInput(1234)), const Uninitialised()],

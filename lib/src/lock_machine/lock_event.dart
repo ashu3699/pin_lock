@@ -37,10 +37,7 @@ class Remove extends LockEvent {
     LockState state,
     PinLockConfiguration configuration,
   ) async {
-    return switch (state) {
-      UnLocked() => const Uninitialised(),
-      _ => state,
-    };
+    return const Uninitialised();
   }
 }
 
