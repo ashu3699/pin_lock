@@ -22,7 +22,7 @@ Future<void> main() async {
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.indigo,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.indigo),
         ),
       ),
@@ -120,7 +120,7 @@ class _InputField extends StatelessWidget {
               child: Container(
                 width: 6,
                 height: 6,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.indigo,
                 ),
@@ -150,7 +150,7 @@ class _Home extends StatelessWidget {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (_) => _SetupAuthWidget()));
             },
-            child: Text('Configure local authentication'),
+            child: const Text('Configure local authentication'),
           ),
         ],
       ),
@@ -184,7 +184,7 @@ class _LockScreen extends StatelessWidget {
               /// adjust your UI accordingly
               if (configuration.availableBiometricMethods.isNotEmpty)
                 IconButton(
-                  icon: Icon(Icons.fingerprint),
+                  icon: const Icon(Icons.fingerprint),
                   onPressed: configuration.onBiometricAuthenticationRequested,
                 ),
             ],
@@ -229,7 +229,7 @@ class _SetupAuthWidget extends StatelessWidget {
         overviewBuilder: (config) => Center(
           /// [isLoading] indicates that user's preferences are still being fetched
           child: config.isLoading
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -238,7 +238,7 @@ class _SetupAuthWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           /// [isPinEnabled] is only `null` while [isLoading] is `true`
-                          Text('Secure the app with a pin code'),
+                          const Text('Secure the app with a pin code'),
                           Switch(
                             value: config.isPinEnabled!,
 
@@ -252,7 +252,7 @@ class _SetupAuthWidget extends StatelessWidget {
                       /// In case of something going wrong, [OverviewConfiguration] provides an [error] property
                       if (config.error != null)
                         Text(config.error!.toString(),
-                            style: TextStyle(color: Colors.red)),
+                            style: const TextStyle(color: Colors.red)),
 
                       /// If biometric authentication is available, provide an option to toggle it on or off
                       if (config.isBiometricAuthAvailable == true)
@@ -302,7 +302,7 @@ class _SetupAuthWidget extends StatelessWidget {
               /// [configuration.error] provides details if something goes wrong (e.g., pins don't match)
               if (configuration.error != null)
                 Text(configuration.error.toString(),
-                    style: TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: Colors.red)),
 
               /// [configuration.canSubmitChange] can optionaly be used to hide or disable submit button
               /// It is also possible to listen for this property and programatically trigger [config.onSubmitChange],
@@ -323,7 +323,7 @@ class _SetupAuthWidget extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              Text('Enter your pin to disable pin authentication'),
+              const Text('Enter your pin to disable pin authentication'),
 
               /// Make sure [configuration.pinInputWidget] is visible on the screen
               configuration.pinInputWidget,
@@ -332,12 +332,12 @@ class _SetupAuthWidget extends StatelessWidget {
               if (configuration.error != null)
                 Text(
                   configuration.error.toString(),
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               if (configuration.canSubmitChange)
                 OutlinedButton(
                     onPressed: configuration.onChangeSubmitted,
-                    child: Text('Save'))
+                    child: const Text('Save'))
             ],
           ),
         ),
